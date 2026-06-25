@@ -1,0 +1,4 @@
+id,company,role,period,description,current
+1,TechCorp Inc.,Senior Full-Stack Developer,2022 - Present,"Lead developer for customer-facing web platform serving 500K+ users. Architected microservices migration reducing latency by 40%.",true
+2,StartupXYZ,Full-Stack Developer,2020 - 2022,"Built SaaS product from scratch with 3 co-founders. Launched MVP in 3 months, grew to 10K paying customers.",false
+3,Digital Agency Co.,Junior Web Developer,2019 - 2020,"Delivered 20+ client websites. Specialized in React frontends and WordPress custom development.",false

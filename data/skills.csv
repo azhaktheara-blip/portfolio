@@ -1,0 +1,13 @@
+name,level,category,icon
+Python,95,Backend,🐍
+Django,90,Backend,🎸
+JavaScript,92,Frontend,⚡
+React,88,Frontend,⚛️
+TypeScript,85,Frontend,📘
+Node.js,80,Backend,🟢
+PostgreSQL,82,Database,🐘
+Redis,75,Database,🔴
+Docker,78,DevOps,🐳
+Git,95,Tools,📦
+Figma,70,Design,🎨
+AWS,72,Cloud,☁️

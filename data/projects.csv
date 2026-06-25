@@ -1,0 +1,7 @@
+id,title,description,tech,demo_url,github_url,image,featured,category
+1,E-Commerce Platform,A full-featured online store with real-time inventory management and Stripe payments.,"Django, React, PostgreSQL, Stripe",https://demo.example.com,https://github.com/alexmorgan/ecommerce,,true,Web
+2,AI Chat Interface,Conversational AI interface with streaming responses and conversation history.,"Next.js, OpenAI API, Tailwind, Supabase",https://chat.example.com,https://github.com/alexmorgan/ai-chat,,true,AI
+3,Portfolio Analytics Dashboard,Real-time dashboard for tracking portfolio performance with charts and alerts.,"Vue.js, FastAPI, Redis, Chart.js",https://analytics.example.com,https://github.com/alexmorgan/analytics,,true,Dashboard
+4,Task Management App,Kanban-style project management app with team collaboration features.,"React, Node.js, MongoDB, Socket.io",https://tasks.example.com,https://github.com/alexmorgan/taskapp,,false,Web
+5,Weather CLI Tool,Beautiful terminal weather app with hourly forecasts and ASCII art.,"Python, Rich, OpenWeatherMap API",,https://github.com/alexmorgan/weather-cli,,false,CLI
+6,Mobile Fitness Tracker,Cross-platform mobile app for tracking workouts and nutrition.,"React Native, Expo, Firebase",,https://github.com/alexmorgan/fitness,,false,Mobile
