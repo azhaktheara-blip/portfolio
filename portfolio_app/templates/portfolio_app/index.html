@@ -630,7 +630,13 @@ footer a { color: var(--accent); }
     <div class="about-avatar-wrap reveal">
       <div class="about-corner tl"></div>
       <div class="about-corner br"></div>
-      <div class="about-avatar">👤</div>
+      <div class="about-avatar">
+  {% if profile.avatar %}
+  <img src="/media/{{ profile.avatar }}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius)">
+  {% else %}
+  👤
+  {% endif %}
+</div>
     </div>
     <div class="about-info reveal">
       <p>{{ profile.bio|default:"I'm a passionate full-stack developer crafting beautiful, performant web applications." }}</p>

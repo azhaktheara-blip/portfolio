@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from . import csv_db
+import os
+from django.conf import settings as django_settings
 
 
 def index(request):
@@ -56,6 +58,15 @@ def admin_dashboard(request):
 @login_required(login_url='/admin-login/')
 def admin_profile(request):
     if request.method == 'POST':
+        avatar_path = csv_db.get_profile().get('avatar', '')
+        avatar = request.FILES.get('avatar_file')
+        if avatar:
+            media_dir = django_settings.MEDIA_ROOT / 'avatars'
+            os.makedirs(media_dir, exist_ok=True)
+            avatar_path = f'avatars/{avatar.name}'
+            with open(django_settings.MEDIA_ROOT / avatar_path, 'wb') as f:
+                for chunk in avatar.chunks():
+                    f.write(chunk)
         csv_db.save_profile({
             'name':     request.POST.get('name', ''),
             'title':    request.POST.get('title', ''),
@@ -67,7 +78,7 @@ def admin_profile(request):
             'github':   request.POST.get('github', ''),
             'linkedin': request.POST.get('linkedin', ''),
             'twitter':  request.POST.get('twitter', ''),
-            'avatar':   request.POST.get('avatar', ''),
+            'avatar':   avatar_path,
         })
         messages.success(request, 'Profile updated successfully!')
         return redirect('admin_profile')
