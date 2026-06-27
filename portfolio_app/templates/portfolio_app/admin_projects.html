@@ -1,0 +1,70 @@
+﻿{% extends "portfolio_app/admin_base.html" %}
+{% block title %}Projects{% endblock %}
+{% block content %}
+<div class="page-header" style="display:flex;align-items:center;justify-content:space-between">
+  <div><h1 class="page-title">Projects</h1><p class="page-subtitle">{{ projects|length }} projects</p></div>
+  <button class="btn btn-primary" onclick="document.getElementById('addModal').classList.add('open')">+ Add Project</button>
+</div>
+<div class="card">
+  <table>
+    <thead><tr><th>Title</th><th>Category</th><th>Featured</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for p in projects %}
+    <tr>
+      <td><strong>{{ p.title }}</strong><div style="color:var(--muted);font-size:0.78rem">{{ p.description|truncatechars:50 }}</div></td>
+      <td><span class="badge badge-purple">{{ p.category }}</span></td>
+      <td>{% if p.featured == "true" %}<span class="badge badge-green">Yes</span>{% else %}<span style="color:var(--muted)">No</span>{% endif %}</td>
+      <td style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-ghost btn-sm" onclick="openEdit('{{ p.id }}','{{ p.title|escapejs }}','{{ p.description|escapejs }}','{{ p.tech|escapejs }}','{{ p.demo_url|escapejs }}','{{ p.github_url|escapejs }}','{{ p.featured }}','{{ p.category }}')">Edit</button>
+        <form method="POST" onsubmit="return confirm('Delete?')"><{% csrf_token %}<input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="{{ p.id }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form>
+      </td>
+    </tr>
+    {% empty %}<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:32px">No projects yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-title">Add New Project</div>
+    <form method="POST">{% csrf_token %}<input type="hidden" name="action" value="add">
+      <div class="form-grid">
+        <div class="form-group full"><label>Title</label><input type="text" name="title" required></div>
+        <div class="form-group full"><label>Description</label><textarea name="description"></textarea></div>
+        <div class="form-group full"><label>Tech Stack (comma separated)</label><input type="text" name="tech" placeholder="Django, React, PostgreSQL"></div>
+        <div class="form-group"><label>Demo URL</label><input type="url" name="demo_url"></div>
+        <div class="form-group"><label>GitHub URL</label><input type="url" name="github_url"></div>
+        <div class="form-group"><label>Category</label><select name="category"><option>Web</option><option>AI</option><option>Dashboard</option><option>Mobile</option><option>CLI</option><option>Other</option></select></div>
+        <div class="form-group"><label>Featured</label><select name="featured"><option value="false">No</option><option value="true">Yes</option></select></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="btn btn-ghost" onclick="document.getElementById('addModal').classList.remove('open')">Cancel</button><button type="submit" class="btn btn-primary">Add Project</button></div>
+    </form>
+  </div>
+</div>
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">Edit Project</div>
+    <form method="POST">{% csrf_token %}<input type="hidden" name="action" value="edit"><input type="hidden" name="id" id="eId">
+      <div class="form-grid">
+        <div class="form-group full"><label>Title</label><input type="text" name="title" id="eTitle" required></div>
+        <div class="form-group full"><label>Description</label><textarea name="description" id="eDesc"></textarea></div>
+        <div class="form-group full"><label>Tech Stack</label><input type="text" name="tech" id="eTech"></div>
+        <div class="form-group"><label>Demo URL</label><input type="url" name="demo_url" id="eDemo"></div>
+        <div class="form-group"><label>GitHub URL</label><input type="url" name="github_url" id="eGithub"></div>
+        <div class="form-group"><label>Category</label><select name="category" id="eCat"><option>Web</option><option>AI</option><option>Dashboard</option><option>Mobile</option><option>CLI</option><option>Other</option></select></div>
+        <div class="form-group"><label>Featured</label><select name="featured" id="eFeatured"><option value="false">No</option><option value="true">Yes</option></select></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="btn btn-ghost" onclick="document.getElementById('editModal').classList.remove('open')">Cancel</button><button type="submit" class="btn btn-primary">Save</button></div>
+    </form>
+  </div>
+</div>
+<script>
+function openEdit(id,t,d,tech,demo,gh,feat,cat){
+  document.getElementById('eId').value=id;document.getElementById('eTitle').value=t;
+  document.getElementById('eDesc').value=d;document.getElementById('eTech').value=tech;
+  document.getElementById('eDemo').value=demo;document.getElementById('eGithub').value=gh;
+  document.getElementById('eFeatured').value=feat;document.getElementById('eCat').value=cat;
+  document.getElementById('editModal').classList.add('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+</script>
+{% endblock %}

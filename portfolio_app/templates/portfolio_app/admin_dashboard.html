@@ -1,0 +1,38 @@
+﻿{% extends "portfolio_app/admin_base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Dashboard</h1>
+  <p class="page-subtitle">Welcome back! Here is your portfolio overview.</p>
+</div>
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-val">{{ projects|length }}</div><div class="stat-label">Projects</div></div>
+  <div class="stat-card"><div class="stat-val">{{ skills|length }}</div><div class="stat-label">Skills</div></div>
+  <div class="stat-card"><div class="stat-val">{{ experience|length }}</div><div class="stat-label">Experience</div></div>
+  <div class="stat-card"><div class="stat-val">{{ messages|length }}</div><div class="stat-label">Messages</div></div>
+</div>
+<div class="card">
+  <div style="margin-bottom:12px;font-family:var(--font-head);font-weight:700">Quick Actions</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a href="{% url 'admin_profile' %}" class="btn btn-primary">Edit Profile</a>
+    <a href="{% url 'admin_projects' %}" class="btn btn-ghost">+ Add Project</a>
+    <a href="{% url 'admin_skills' %}" class="btn btn-ghost">+ Add Skill</a>
+    <a href="{% url 'admin_experience' %}" class="btn btn-ghost">+ Add Experience</a>
+    <a href="/" target="_blank" class="btn btn-ghost">View Live Site</a>
+  </div>
+</div>
+<div class="card">
+  <div style="margin-bottom:12px;font-family:var(--font-head);font-weight:700">Recent Messages</div>
+  {% if messages %}
+    {% for msg in messages|slice:":5" %}
+    <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:0.9rem;font-weight:500">{{ msg.name }} — <span style="color:var(--accent)">{{ msg.email }}</span></div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-top:2px">{{ msg.body|truncatechars:80 }}</div>
+    </div>
+    {% endfor %}
+    <a href="{% url 'admin_messages' %}" class="btn btn-ghost btn-sm" style="margin-top:12px">View All Messages</a>
+  {% else %}
+    <p style="color:var(--muted);font-size:0.88rem">No messages yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

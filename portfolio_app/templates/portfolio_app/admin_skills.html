@@ -1,0 +1,108 @@
+﻿{% extends "portfolio_app/admin_base.html" %}
+{% block title %}Skills{% endblock %}
+{% block content %}
+<div class="page-header" style="display:flex;align-items:center;justify-content:space-between">
+  <div><h1 class="page-title">Skills</h1><p class="page-subtitle">{{ skills|length }} skills</p></div>
+  <button class="btn btn-primary" onclick="document.getElementById('addModal').classList.add('open')">+ Add Skill</button>
+</div>
+<div class="card">
+  <table>
+    <thead><tr><th>Icon</th><th>Name</th><th>Category</th><th>Level</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for s in skills %}
+    <tr>
+      <td style="font-size:1.4rem">{{ s.icon }}</td>
+      <td><strong>{{ s.name }}</strong></td>
+      <td><span class="badge badge-purple">{{ s.category }}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:6px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="height:100%;width:{{ s.level }}%;background:linear-gradient(90deg,#6ee7b7,#a78bfa);border-radius:4px"></div>
+          </div>
+          <span style="font-size:0.82rem;color:var(--muted)">{{ s.level }}%</span>
+        </div>
+      </td>
+      <td style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-ghost btn-sm" onclick="openEdit('{{ s.name|escapejs }}','{{ s.level }}','{{ s.category|escapejs }}','{{ s.icon|escapejs }}')">Edit</button>
+        <form method="POST" onsubmit="return confirm('Delete this skill?')">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="delete">
+          <input type="hidden" name="name" value="{{ s.name }}">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px">No skills yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Add Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-title">Add Skill</div>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add">
+      <div class="form-grid">
+        <div class="form-group"><label>Name</label><input type="text" name="name" required placeholder="e.g. Python"></div>
+        <div class="form-group"><label>Icon (emoji)</label><input type="text" name="icon" placeholder="🐍" maxlength="4"></div>
+        <div class="form-group"><label>Level (0-100)</label><input type="number" name="level" min="0" max="100" value="80"></div>
+        <div class="form-group"><label>Category</label>
+          <select name="category">
+            <option>Frontend</option><option>Backend</option><option>Database</option>
+            <option>DevOps</option><option>Cloud</option><option>Tools</option><option>Design</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="document.getElementById('addModal').classList.remove('open')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Skill</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">Edit Skill</div>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="edit">
+      <input type="hidden" name="original_name" id="eOrig">
+      <div class="form-grid">
+        <div class="form-group"><label>Name</label><input type="text" name="name" id="eName" required></div>
+        <div class="form-group"><label>Icon (emoji)</label><input type="text" name="icon" id="eIcon" maxlength="4"></div>
+        <div class="form-group"><label>Level (0-100)</label><input type="number" name="level" id="eLevel" min="0" max="100"></div>
+        <div class="form-group"><label>Category</label>
+          <select name="category" id="eCat">
+            <option>Frontend</option><option>Backend</option><option>Database</option>
+            <option>DevOps</option><option>Cloud</option><option>Tools</option><option>Design</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="document.getElementById('editModal').classList.remove('open')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEdit(name, level, cat, icon) {
+  document.getElementById('eOrig').value = name;
+  document.getElementById('eName').value = name;
+  document.getElementById('eLevel').value = level;
+  document.getElementById('eCat').value = cat;
+  document.getElementById('eIcon').value = icon;
+  document.getElementById('editModal').classList.add('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+</script>
+{% endblock %}

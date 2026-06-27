@@ -1,0 +1,98 @@
+﻿{% extends "portfolio_app/admin_base.html" %}
+{% block title %}Experience{% endblock %}
+{% block content %}
+<div class="page-header" style="display:flex;align-items:center;justify-content:space-between">
+  <div><h1 class="page-title">Experience</h1><p class="page-subtitle">{{ experience|length }} jobs</p></div>
+  <button class="btn btn-primary" onclick="document.getElementById('addModal').classList.add('open')">+ Add Experience</button>
+</div>
+<div class="card">
+  <table>
+    <thead><tr><th>Company</th><th>Role</th><th>Period</th><th>Current</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for e in experience %}
+    <tr>
+      <td><strong>{{ e.company }}</strong></td>
+      <td style="color:var(--accent2)">{{ e.role }}</td>
+      <td style="color:var(--muted)">{{ e.period }}</td>
+      <td>{% if e.current == "true" %}<span class="badge badge-green">Current</span>{% endif %}</td>
+      <td style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-ghost btn-sm" onclick="openEdit('{{ e.id }}','{{ e.company|escapejs }}','{{ e.role|escapejs }}','{{ e.period|escapejs }}','{{ e.description|escapejs }}','{{ e.current }}')">Edit</button>
+        <form method="POST" onsubmit="return confirm('Delete?')">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="delete">
+          <input type="hidden" name="id" value="{{ e.id }}">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px">No experience yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Add Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-title">Add Experience</div>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add">
+      <div class="form-grid">
+        <div class="form-group"><label>Company</label><input type="text" name="company" required></div>
+        <div class="form-group"><label>Role / Title</label><input type="text" name="role" required></div>
+        <div class="form-group"><label>Period</label><input type="text" name="period" placeholder="2023 - Present"></div>
+        <div class="form-group"><label>Current Job?</label>
+          <select name="current"><option value="false">No</option><option value="true">Yes</option></select>
+        </div>
+        <div class="form-group full"><label>Description</label><textarea name="description" rows="3"></textarea></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="document.getElementById('addModal').classList.remove('open')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">Edit Experience</div>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="edit">
+      <input type="hidden" name="id" id="eId">
+      <div class="form-grid">
+        <div class="form-group"><label>Company</label><input type="text" name="company" id="eCompany" required></div>
+        <div class="form-group"><label>Role</label><input type="text" name="role" id="eRole"></div>
+        <div class="form-group"><label>Period</label><input type="text" name="period" id="ePeriod"></div>
+        <div class="form-group"><label>Current?</label>
+          <select name="current" id="eCurrent"><option value="false">No</option><option value="true">Yes</option></select>
+        </div>
+        <div class="form-group full"><label>Description</label><textarea name="description" id="eDesc" rows="3"></textarea></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="document.getElementById('editModal').classList.remove('open')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEdit(id, company, role, period, desc, current) {
+  document.getElementById('eId').value = id;
+  document.getElementById('eCompany').value = company;
+  document.getElementById('eRole').value = role;
+  document.getElementById('ePeriod').value = period;
+  document.getElementById('eDesc').value = desc;
+  document.getElementById('eCurrent').value = current;
+  document.getElementById('editModal').classList.add('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+</script>
+{% endblock %}
